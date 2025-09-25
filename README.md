@@ -44,5 +44,5 @@ _Haz clic en el botón  para abrir y ejecutar el notebook directamente en Google
 ## Autor
 
 *   **Pablo Antonio García Pastor**
-    *   [LinkedIn](https:\\https://www.linkedin.com/in/pablogp-ai)
+    *   [LinkedIn](https://www.linkedin.com/in/pablogp-ai)
     *   [Correo Electrónico](pablotgp2002@gmail.com)
