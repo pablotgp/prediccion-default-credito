@@ -2,8 +2,8 @@
 
 Este proyecto presenta un análisis completo y el desarrollo de un modelo de machine learning para predecir la probabilidad de que un cliente incumpla con el pago de su tarjeta de crédito. El análisis se realiza en un Jupyter Notebook y se resume en un informe detallado en PDF.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TU_USUARIO/prediccion-default-credito/blob/main/notebooks/Calibración.ipynb)
-_Haz clic en el botón de arriba para abrir y ejecutar el notebook directamente en Google Colab._
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pablotgp/prediccion-default-credito/blob/main/notebooks/Calibración.ipynb)
+_Haz clic en el botón  para abrir y ejecutar el notebook directamente en Google Colab._
 
 ---
 
@@ -44,5 +44,5 @@ _Haz clic en el botón de arriba para abrir y ejecutar el notebook directamente 
 ## Autor
 
 *   **Pablo Antonio García Pastor**
-    *   [LinkedIn](URL_DE_TU_LINKEDIN_AQUÍ)
-    *   [Correo Electrónico](tu_correo@ejemplo.com)
+    *   [LinkedIn](https:\\https://www.linkedin.com/in/pablogp-ai)
+    *   [Correo Electrónico](pablotgp2002@gmail.com)
