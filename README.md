@@ -45,4 +45,4 @@ _Haz clic en el botón  para abrir y ejecutar el notebook directamente en Google
 
 *   **Pablo Antonio García Pastor**
     *   [LinkedIn](https://www.linkedin.com/in/pablogp-ai)
-    *   [Correo Electrónico](pablotgp2002@gmail.com)
+    *   [Correo Electrónico](mailto:pablotgp2002@gmail.com)
