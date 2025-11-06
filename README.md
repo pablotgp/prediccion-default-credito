@@ -1,45 +1,91 @@
-# Predicción de Default de Tarjeta de Crédito
-
-Este proyecto presenta un análisis completo y el desarrollo de un modelo de machine learning para predecir la probabilidad de que un cliente incumpla con el pago de su tarjeta de crédito. El análisis se realiza en un Jupyter Notebook y se resume en un informe detallado en PDF.
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pablotgp/prediccion-default-credito/blob/main/notebooks/Calibración.ipynb)
-_Haz clic en el botón  para abrir y ejecutar el notebook directamente en Google Colab._
-
 ---
 
-## Contenido del Repositorio
+# 📈 Predicción de Incumplimiento de Pago de Tarjetas de Crédito
 
-*   **/notebooks**: Contiene el Jupyter Notebook `Calibración.ipynb` con todo el proceso: limpieza de datos, análisis exploratorio (EDA), entrenamiento de modelos y explicabilidad con SHAP.
-*   **/reports**: Incluye el informe final `Informe_Calibracion_Modelos.pdf` que resume los hallazgos y conclusiones del análisis.
-*   **/data**: Contiene el dataset original `default of credit card clients.xls` utilizado para el análisis.
+Este proyecto desarrolla un modelo de Machine Learning de extremo a extremo para predecir la probabilidad de que un cliente de tarjeta de crédito incumpla su próximo pago. El principal desafío fue abordar el severo **desbalance de clases** en los datos, lo cual se resolvió exitosamente utilizando la técnica **SMOTE**.
 
-## Metodología
+El modelo final, un `Gradient Boosting Classifier` optimizado, logra un **F1-score de 0.51** y es capaz de **identificar correctamente al 56%** de los clientes que incumplirán su pago.
 
-1.  **Análisis Exploratorio de Datos (EDA)**: Investigación de las distribuciones de variables clave y sus relaciones para entender el perfil de los clientes.
-2.  **Preprocesamiento de Datos**: Limpieza y agrupación de categorías en variables como `EDUCATION` y `MARRIAGE`.
-3.  **Entrenamiento de Modelos**: Se compararon tres algoritmos: Regresión Logística, Random Forest y **Gradient Boosting**.
-4.  **Evaluación y Selección**: Se eligió el modelo **Gradient Boosting** como el de mejor rendimiento, utilizando un criterio de selección que balancea el **AUC** y el **F1-Score** para la clase minoritaria (clientes en default).
-5.  **Interpretabilidad del Modelo**: Se utilizó la librería **SHAP** para entender qué características son las más influyentes en las predicciones del modelo, tanto a nivel global como para predicciones individuales.
+## 🎯 El Problema de Negocio
 
-## Resultados Clave
+La capacidad de anticipar el incumplimiento de pago es crucial para las instituciones financieras. Un modelo predictivo fiable permite:
+*   **Mitigar riesgos:** Tomar acciones preventivas con clientes de alto riesgo.
+*   **Optimizar la asignación de capital:** Ajustar límites de crédito y políticas de préstamo.
+*   **Reducir pérdidas financieras:** Minimizar las pérdidas por deudas incobrables.
 
-*   El modelo **Gradient Boosting** demostró ser el más equilibrado, con un **AUC de 0.7822** y un **F1-score de 0.4625** para la clase "Default".
-*   Las características más importantes para predecir el impago son el **estado de pago del mes más reciente (PAY_0)**, el **límite de crédito (LIMIT_BAL)** y el historial de pagos anteriores.
-*   Se identificó una limitación clave en el bajo **recall (35%)**, lo que motivó recomendaciones para futuras mejoras, como el uso de técnicas de balanceo de clases (SMOTE).
+La principal dificultad técnica es que el número de clientes que incumplen es mucho menor que el de los que pagan a tiempo. Esto provoca que los modelos tiendan a ignorar la clase minoritaria, resultando en una baja capacidad de detección, que es precisamente el objetivo de negocio.
 
-## Cómo Usar este Repositorio en Google Colab
+## 📊 El Conjunto de Datos
 
-1.  **Abrir el Notebook**: Haz clic en el badge "Open in Colab" al inicio de este README.
-2.  **Subir el Dataset**: El notebook está diseñado para funcionar con una ruta relativa. Como Colab no puede acceder directamente a la carpeta `data/` del repositorio, deberás subir el archivo de datos manualmente a tu sesión de Colab.
-    *   En el panel izquierdo de Colab, ve a la pestaña de **Archivos (icono de carpeta)**.
-    *   Haz clic en el icono de **"Subir al almacenamiento de la sesión"**.
-    *   Selecciona el archivo `default of credit card clients.xls` de la carpeta `data/` que descargaste de este repositorio.
-3.  **Ajustar la Ruta en el Notebook (si es necesario)**: Una vez subido, la ruta en el notebook para leer el archivo debe ser la simple:
-    ```python
-    # Asegúrate de que la celda de carga de datos use esta ruta:
-    pd.read_excel('default of credit card clients.xls', header=1)
+El proyecto utiliza el conjunto de datos [**"Default of Credit Card Clients"**](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients) del Repositorio de Machine Learning de la UCI.
+
+*   **Tamaño:** 30,000 observaciones.
+*   **Características:** 23 variables que incluyen información demográfica del cliente (género, edad, educación), su límite de crédito, historial de pagos pasados, estados de cuenta y montos de pago.
+*   **Variable Objetivo:** `default payment next month` (1 = sí, 0 = no).
+
+## 🛠️ Metodología y Flujo de Trabajo
+
+El proyecto se desarrolló siguiendo un flujo de trabajo sistemático para garantizar la robustez y fiabilidad del modelo final.
+
+1.  **Análisis Exploratorio de Datos (EDA):** Se realizó un análisis inicial para entender la distribución de las variables, identificar correlaciones y visualizar la composición del conjunto de datos.
+
+2.  **Preprocesamiento de Datos:** Las características categóricas fueron tratadas adecuadamente y se aplicó un escalado (`StandardScaler`) para normalizar las variables numéricas.
+
+3.  **Selección del Modelo Base:** Se compararon tres modelos de clasificación (Random Forest, Logistic Regression y Gradient Boosting) utilizando validación cruzada estratificada. El `Gradient Boosting` fue seleccionado como el de mejor rendimiento inicial.
+
+4.  **Manejo del Desbalance de Clases (SMOTE):** Este fue el paso más crítico. Se integró la técnica **SMOTE** dentro de un `Pipeline` para crear muestras sintéticas de la clase minoritaria *únicamente* durante el entrenamiento de la validación cruzada, evitando así la fuga de datos. Este paso **aumentó el Recall de la clase minoritaria de 0.35 a 0.56**, transformando el modelo de inútil a valioso.
+
+5.  **Optimización de Hiperparámetros (GridSearchCV):** Se realizó una búsqueda exhaustiva en rejilla para encontrar la combinación de hiperparámetros que maximizara el F1-score del modelo `Gradient Boosting`.
+
+6.  **Evaluación Final:** El modelo optimizado final fue evaluado en un conjunto de prueba completamente reservado para medir su rendimiento en datos no vistos.
+
+## ✨ Resultados: La Evolución del Rendimiento
+
+La siguiente tabla ilustra el impacto de cada etapa del proceso en el rendimiento del `Gradient Boosting Classifier` para predecir la clase `Default`.
+
+| Modelo | F1-Score (Default) | Recall (Default) | Precision (Default) |
+| :--- | :---: | :---: | :---: |
+| **1. Modelo Base (Sin SMOTE)** | 0.46 | 0.35 | 0.67 |
+| **2. Modelo Final (con SMOTE + Optimizado)**| **0.51** | **0.56** | **0.46** |
+
+El uso de SMOTE fue clave para mejorar drásticamente la capacidad del modelo para detectar a los clientes en riesgo, aunque esto implicara un trade-off con la precisión.
+
+## 💡 Visualizaciones Sugeridas
+
+Para enriquecer este análisis, se podrían añadir las siguientes gráficas al notebook:
+
+*   **Distribución de Clases:** Un gráfico de barras para visualizar el desbalance inicial entre las clases `Default` y `No Default`.
+    ```markdown
+    ![Distribución de Clases](ruta/a/tu/imagen_distribucion.png)
     ```
-4.  **Ejecutar las Celdas**: ¡Ya puedes ejecutar todo el notebook!
+*   **Importancia de Características:** Un gráfico de barras que muestre qué variables (`LIMIT_BAL`, `PAY_0`, etc.) tienen más peso en las predicciones del modelo final.
+    ```markdown
+    ![Importancia de Características](ruta/a/tu/imagen_importancia.png)
+    ```*   **Matriz de Confusión Final:** Una visualización de la matriz de confusión del modelo optimizado en el conjunto de prueba para ver claramente los Verdaderos Positivos, Falsos Positivos, etc.
+    ```markdown
+    ![Matriz de Confusión](ruta/a/tu/imagen_matriz.png)
+    ```
+
+## 🚀 Próximos Pasos y Mejoras Futuras
+
+*   **Ingeniería de Características (Feature Engineering):** Crear nuevas variables a partir de las existentes (ej. ratios entre el límite de crédito y los saldos) para intentar capturar patrones más complejos.
+*   **Probar Algoritmos Avanzados:** Implementar `XGBoost` o `LightGBM`, que son versiones más potentes y rápidas de Gradient Boosting y a menudo ofrecen un mayor rendimiento.
+*   **Ajustar el Umbral de Decisión:** Analizar la curva de Precisión-Recall para seleccionar un umbral de probabilidad óptimo que se alinee mejor con los objetivos de negocio (ej. capturar al 70% de los impagadores, aceptando una menor precisión).
+
+## ⚙️ Cómo Ejecutar este Proyecto
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/pablotgp/prediccion-default-credito.git
+    cd prediccion-default-credito
+    ```
+2.  **Instalar las dependencias:**
+    Se recomienda crear un entorno virtual.
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  **Ejecutar el Notebook:**
+    Abrir y ejecutar el archivo `.ipynb` en la carpeta `notebooks` usando Jupyter Notebook o Visual Studio Code.
 
 ## Autor
 
